@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CERGU Seminar Calendar – Autumn 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --surface: #fffdf7;
+    --border: #d4c9b0;
+    --text: #1a1714;
+    --text-muted: #7a7060;
+    --accent: #2d5a8e;
+    --accent-light: #e8f0f8;
+    --accent2: #8e2d2d;
+    --event-bg: #2d5a8e;
+    --event-text: #ffffff;
+    --today: #f0e6d0;
+    --hour-h: 56px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    padding: 2rem 2rem 1.2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    background: var(--surface);
+  }
+
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  header h1 span {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .week-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-left: auto;
+    padding-right: 0.5rem;
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: var(--surface);
+    padding: 0.8rem 2rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  nav button {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.9rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.04em;
+  }
+
+  nav button:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  #week-range {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    min-width: 220px;
+    text-align: center;
+  }
+
+  .calendar-wrap {
+    flex: 1;
+    overflow-x: auto;
+    padding: 1.5rem 2rem 3rem;
+  }
+
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: 52px repeat(7, 1fr);
+    min-width: 720px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+
+  /* Day headers */
+  .day-header {
+    padding: 0.6rem 0.4rem;
+    text-align: center;
+    border-bottom: 2px solid var(--border);
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .day-header:last-child { border-right: none; }
+
+  .day-header .dow {
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .day-header .dom {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  .day-header.has-event .dom { color: var(--accent); }
+  .day-header.is-today { background: var(--today); }
+
+  .time-gutter {
+    grid-column: 1;
+    border-right: 1px solid var(--border);
+  }
+
+  .time-label {
+    height: var(--hour-h);
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding: 3px 6px 0 0;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .time-label:last-child { border-bottom: none; }
+
+  /* Day columns */
+  .day-col {
+    position: relative;
+    border-right: 1px solid var(--border);
+  }
+
+  .day-col:last-child { border-right: none; }
+
+  .hour-slot {
+    height: var(--hour-h);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hour-slot.half { border-bottom: 1px dashed #e5ddd0; height: calc(var(--hour-h) / 2); }
+
+  /* Events */
+  .event-block {
+    position: absolute;
+    left: 3px;
+    right: 3px;
+    background: var(--event-bg);
+    color: var(--event-text);
+    border-radius: 3px;
+    padding: 4px 6px;
+    font-size: 0.62rem;
+    line-height: 1.35;
+    overflow: hidden;
+    cursor: default;
+    z-index: 2;
+    transition: filter 0.15s;
+  }
+
+  .event-block:hover { filter: brightness(1.15); z-index: 10; }
+
+  .event-block .ev-time {
+    font-size: 0.58rem;
+    opacity: 0.75;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+  }
+
+  .event-block .ev-title {
+    font-weight: 500;
+    font-size: 0.63rem;
+    letter-spacing: 0.01em;
+  }
+
+  .event-block .ev-loc {
+    font-size: 0.57rem;
+    opacity: 0.7;
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  .empty-week {
+    grid-column: 2 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Corner cell */
+  .corner {
+    border-bottom: 2px solid var(--border);
+    border-right: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  /* Tooltip */
+  .tooltip {
+    display: none;
+    position: fixed;
+    background: var(--text);
+    color: #fff;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    padding: 0.7rem 0.9rem;
+    border-radius: 3px;
+    max-width: 280px;
+    z-index: 100;
+    line-height: 1.5;
+    pointer-events: none;
+  }
+
+  .tooltip.visible { display: block; }
+
+  footer {
+    padding: 1rem 2rem;
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    letter-spacing: 0.08em;
+    background: var(--surface);
+  }
+
+  @media (max-width: 600px) {
+    header { padding: 1rem; }
+    nav { padding: 0.6rem 1rem; }
+    .calendar-wrap { padding: 0.8rem 0.5rem 2rem; }
+    header h1 { font-size: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>CERGU <span>Seminar Calendar</span></h1>
+  <div class="week-label">Autumn 2026</div>
+</header>
+
+<nav>
+  <button id="prev">← prev</button>
+  <div id="week-range"></div>
+  <button id="next">next →</button>
+</nav>
+
+<div class="calendar-wrap" id="cal-wrap">
+  <div class="calendar-grid" id="cal-grid"></div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<footer>Centre for European Research (CERGU) · University of Gothenburg · Autumn 2026</footer>
+
+<script>
+const EVENTS = [
+  {
+    date: '2026-09-28',
+    start: '13:15', end: '14:30',
+    title: 'Guest Seminar: Hanna Tuominen',
+    desc: 'Jean Monnet Professor, University of Helsinki. Co-arranged with the International Politics seminar series. No title announced yet.',
+    loc: 'Lilla Skansen B40'
+  },
+  {
+    date: '2026-10-06',
+    start: '09:15', end: '10:30',
+    title: 'Guest Seminar: Mariia Shynkarenko',
+    desc: 'Political scientist and Research Associate, Ukraine in European Dialogue Program, IWM Vienna. Title TBA.',
+    loc: 'Lilla Skansen B340'
+  },
+  {
+    date: '2026-10-20',
+    start: '09:15', end: '10:30',
+    title: 'Working Seminar: Natalia Volvach',
+    desc: 'CERGU postdoctoral researcher, Department of Cultural Sciences. Title TBA.',
+    loc: 'Lilla Skansen B340'
+  },
+  {
+    date: '2026-11-03',
+    start: '10:00', end: '12:30',
+    title: 'Junior Researchers Conference',
+    desc: '',
+    loc: 'Stora Skansen B336'
+  },
+  {
+    date: '2026-11-06',
+    start: '13:00', end: '15:00',
+    title: 'Inaugural Europa Lecture: Frank Schimmelfennig',
+    desc: '"Beyond merit gaps and waiting rooms? EU enlargement in a geopolitical era". Register to attend.',
+    loc: 'Lecture Hall Dragonen'
+  },
+  {
+    date: '2026-11-09',
+    start: '13:00', end: '15:00',
+    title: 'Seminar: Erik Wennerström',
+    desc: 'Judge, European Court of Human Rights. "Europadomstolen 2026 - krig, klimathot och konstitutionella utmaningar" (in Swedish).',
+    loc: 'Aulan, Vasaparken'
+  },
+  {
+    date: '2026-11-10',
+    start: '09:00', end: '12:00',
+    title: 'Research Application Idea Seminar',
+    desc: '',
+    loc: 'Lilla Skansen B340'
+  },
+  {
+    date: '2026-12-07',
+    start: '13:15', end: '14:30',
+    title: 'Guest Seminar: Mark Rhinard',
+    desc: 'Stockholm University and UI. Title TBA. Co-arranged with the International Politics seminar series.',
+    loc: 'B228'
+  },
+  {
+    date: '2026-12-08',
+    start: '14:00', end: '15:15',
+    title: 'European Research Day',
+    desc: 'Location TBC.',
+    loc: 'TBC'
+  }
+];
+
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+// Parse time string to fractional hours
+function timeToHours(t) {
+  const [h, m] = t.split(':').map(Number);
+  return h + m / 60;
+}
+
+function dateKey(d) {
+  return d.toISOString().slice(0, 10);
+}
+
+// Get Monday of a week containing date d
+function getMonday(d) {
+  const day = d.getDay(); // 0=Sun
+  const diff = (day === 0 ? -6 : 1 - day);
+  const m = new Date(d);
+  m.setDate(d.getDate() + diff);
+  return m;
+}
+
+function addDays(d, n) {
+  const r = new Date(d);
+  r.setDate(r.getDate() + n);
+  return r;
+}
+
+// Build event lookup by date
+const eventsByDate = {};
+EVENTS.forEach(e => {
+  if (!eventsByDate[e.date]) eventsByDate[e.date] = [];
+  eventsByDate[e.date].push(e);
+});
+
+// All event dates
+const eventDates = Object.keys(eventsByDate).map(d => new Date(d));
+const firstEvent = new Date(Math.min(...eventDates));
+const lastEvent = new Date(Math.max(...eventDates));
+
+// Start at the first week that has an event
+let currentMonday = getMonday(firstEvent);
+
+// All week Mondays that span the term
+function getAllEventWeeks() {
+  const weeks = new Set();
+  eventDates.forEach(d => {
+    weeks.add(getMonday(d).toISOString().slice(0,10));
+  });
+  const sorted = [...weeks].sort();
+  return sorted.map(s => new Date(s));
+}
+
+const eventWeeks = getAllEventWeeks();
+let weekIndex = 0;
+
+function renderWeek(monday) {
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+
+  const days = Array.from({length: 7}, (_, i) => addDays(monday, i));
+  const dayKeys = days.map(dateKey);
+  const today = dateKey(new Date());
+
+  // Determine time range dynamically
+  let minHour = 22, maxHour = 8;
+  let hasEvents = false;
+
+  dayKeys.forEach(dk => {
+    if (eventsByDate[dk]) {
+      hasEvents = true;
+      eventsByDate[dk].forEach(e => {
+        const s = timeToHours(e.start);
+        const en = timeToHours(e.end);
+        minHour = Math.min(minHour, Math.floor(s));
+        maxHour = Math.max(maxHour, Math.ceil(en));
+      });
+    }
+  });
+
+  // Clamp to 8–22
+  if (!hasEvents) { minHour = 8; maxHour = 18; }
+  minHour = Math.max(8, minHour);
+  maxHour = Math.min(22, maxHour);
+
+  // Add padding
+  minHour = Math.max(8, minHour - 1);
+  maxHour = Math.min(22, maxHour + 1);
+
+  const hours = Array.from({length: maxHour - minHour}, (_, i) => minHour + i);
+
+  // Update week range label
+  const endSunday = addDays(monday, 6);
+  document.getElementById('week-range').textContent =
+    `${days[0].getDate()} ${MONTHS[days[0].getMonth()]} – ${endSunday.getDate()} ${MONTHS[endSunday.getMonth()]} ${endSunday.getFullYear()}`;
+
+  // Corner
+  const corner = document.createElement('div');
+  corner.className = 'corner';
+  grid.appendChild(corner);
+
+  // Day headers
+  days.forEach((d, i) => {
+    const h = document.createElement('div');
+    h.className = 'day-header';
+    if (dayKeys[i] === today) h.classList.add('is-today');
+    if (eventsByDate[dayKeys[i]]) h.classList.add('has-event');
+    h.innerHTML = `<div class="dow">${DAYS[i]}</div><div class="dom">${d.getDate()}</div>`;
+    grid.appendChild(h);
+  });
+
+  // Time gutter
+  const gutter = document.createElement('div');
+  gutter.className = 'time-gutter';
+  hours.forEach(h => {
+    const lbl = document.createElement('div');
+    lbl.className = 'time-label';
+    lbl.textContent = `${String(h).padStart(2,'0')}:00`;
+    gutter.appendChild(lbl);
+  });
+  grid.appendChild(gutter);
+
+  // Day columns
+  days.forEach((d, di) => {
+    const col = document.createElement('div');
+    col.className = 'day-col';
+    col.style.position = 'relative';
+
+    // Hour slots
+    hours.forEach(() => {
+      const slot = document.createElement('div');
+      slot.className = 'hour-slot';
+      col.appendChild(slot);
+    });
+
+    // Events
+    const dk = dayKeys[di];
+    if (eventsByDate[dk]) {
+      eventsByDate[dk].forEach(ev => {
+        const startH = timeToHours(ev.start);
+        const endH = timeToHours(ev.end);
+        const top = (startH - minHour) * 56; // px per hour = --hour-h
+        const height = (endH - startH) * 56;
+
+        const block = document.createElement('div');
+        block.className = 'event-block';
+        block.style.top = `${top}px`;
+        block.style.height = `${Math.max(height, 28)}px`;
+        block.innerHTML = `
+          <div class="ev-time">${ev.start}–${ev.end}</div>
+          <div class="ev-title">${ev.title}</div>
+          <div class="ev-loc">${ev.loc}</div>
+        `;
+
+        // Tooltip
+        block.addEventListener('mouseenter', (e) => showTooltip(e, ev));
+        block.addEventListener('mousemove', (e) => moveTooltip(e));
+        block.addEventListener('mouseleave', hideTooltip);
+
+        col.appendChild(block);
+      });
+    }
+
+    grid.appendChild(col);
+  });
+}
+
+// Tooltip
+const tooltip = document.getElementById('tooltip');
+
+function showTooltip(e, ev) {
+  tooltip.innerHTML = `<strong>${ev.title}</strong><br>${ev.start}–${ev.end}<br>${ev.loc}${ev.desc ? '<br><br>' + ev.desc : ''}`;
+  tooltip.classList.add('visible');
+  moveTooltip(e);
+}
+
+function moveTooltip(e) {
+  let x = e.clientX + 14;
+  let y = e.clientY + 14;
+  if (x + 290 > window.innerWidth) x = e.clientX - 294;
+  if (y + 150 > window.innerHeight) y = e.clientY - 154;
+  tooltip.style.left = x + 'px';
+  tooltip.style.top = y + 'px';
+}
+
+function hideTooltip() {
+  tooltip.classList.remove('visible');
+}
+
+// Navigation
+document.getElementById('prev').addEventListener('click', () => {
+  if (weekIndex > 0) { weekIndex--; renderWeek(eventWeeks[weekIndex]); }
+});
+
+document.getElementById('next').addEventListener('click', () => {
+  if (weekIndex < eventWeeks.length - 1) { weekIndex++; renderWeek(eventWeeks[weekIndex]); }
+});
+
+// Swipe
+let touchStartX = 0;
+document.getElementById('cal-wrap').addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].screenX;
+}, {passive: true});
+
+document.getElementById('cal-wrap').addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].screenX - touchStartX;
+  if (Math.abs(dx) > 50) {
+    if (dx < 0 && weekIndex < eventWeeks.length - 1) { weekIndex++; renderWeek(eventWeeks[weekIndex]); }
+    if (dx > 0 && weekIndex > 0) { weekIndex--; renderWeek(eventWeeks[weekIndex]); }
+  }
+}, {passive: true});
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' && weekIndex < eventWeeks.length - 1) {
+    weekIndex++; renderWeek(eventWeeks[weekIndex]);
+  }
+  if (e.key === 'ArrowLeft' && weekIndex > 0) {
+    weekIndex--; renderWeek(eventWeeks[weekIndex]);
+  }
+});
+
+// Init
+renderWeek(eventWeeks[weekIndex]);
+</script>
+</body>
+</html>
