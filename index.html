@@ -683,20 +683,6 @@ document.getElementById('next').addEventListener('click', () => {
   if (weekIndex < eventWeeks.length - 1) { weekIndex++; renderWeek(eventWeeks[weekIndex]); }
 });
 
-// Swipe
-let touchStartX = 0;
-document.getElementById('cal-wrap').addEventListener('touchstart', e => {
-  touchStartX = e.changedTouches[0].screenX;
-}, {passive: true});
-
-document.getElementById('cal-wrap').addEventListener('touchend', e => {
-  const dx = e.changedTouches[0].screenX - touchStartX;
-  if (Math.abs(dx) > 50) {
-    if (dx < 0 && weekIndex < eventWeeks.length - 1) { weekIndex++; renderWeek(eventWeeks[weekIndex]); }
-    if (dx > 0 && weekIndex > 0) { weekIndex--; renderWeek(eventWeeks[weekIndex]); }
-  }
-}, {passive: true});
-
 // Keyboard navigation
 document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' && weekIndex < eventWeeks.length - 1) {
