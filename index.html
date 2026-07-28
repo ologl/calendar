@@ -142,6 +142,14 @@
   .day-header.has-event .dom { color: #000; font-weight: 500; }
   .day-header.is-today { background: var(--today); }
 
+  .period-tag {
+    font-size: 0.5rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 2px;
+    font-weight: 600;
+  }
+
   .time-gutter {
     grid-column: 1;
     border-right: 1px solid var(--border);
@@ -357,6 +365,14 @@ const EVENTS = [
     category: 'travel'
   },
   {
+    date: '2026-07-30',
+    start: '11:03', end: '13:59',
+    title: "Listen to Per's music",
+    desc: '',
+    loc: '',
+    category: 'personal'
+  },
+  {
     date: '2026-08-06',
     start: '13:58', end: '16:54',
     title: 'Train to Alingsås',
@@ -438,6 +454,71 @@ function getAllEventWeeks() {
 const eventWeeks = getAllEventWeeks();
 let weekIndex = 0;
 
+// Background-tinted date ranges (e.g. trips, stays)
+const PERIODS = [
+  {
+    start: '2026-07-30',
+    end: '2026-08-06',
+    label: 'Stockholm',
+    color: 'rgba(45, 90, 142, 0.10)',
+    textColor: '#2d5a8e'
+  }
+];
+
+function getPeriodForDate(dk) {
+  return PERIODS.find(p => dk >= p.start && dk <= p.end) || null;
+}
+
+// Lay out overlapping events within a single day into side-by-side columns
+function layoutDayEvents(dayEvents) {
+  const items = dayEvents.map(ev => ({
+    ev,
+    startH: timeToHours(ev.start),
+    endH: timeToHours(ev.end)
+  }));
+  items.sort((a, b) => a.startH - b.startH || a.endH - b.endH);
+
+  const clusters = [];
+  let current = [];
+  let currentMaxEnd = -Infinity;
+  items.forEach(item => {
+    if (current.length === 0 || item.startH < currentMaxEnd) {
+      current.push(item);
+      currentMaxEnd = Math.max(currentMaxEnd, item.endH);
+    } else {
+      clusters.push(current);
+      current = [item];
+      currentMaxEnd = item.endH;
+    }
+  });
+  if (current.length) clusters.push(current);
+
+  const result = [];
+  clusters.forEach(cluster => {
+    const colEnds = [];
+    cluster.forEach(item => {
+      let placedCol = -1;
+      for (let c = 0; c < colEnds.length; c++) {
+        if (colEnds[c] <= item.startH) {
+          colEnds[c] = item.endH;
+          placedCol = c;
+          break;
+        }
+      }
+      if (placedCol === -1) {
+        colEnds.push(item.endH);
+        placedCol = colEnds.length - 1;
+      }
+      item.col = placedCol;
+    });
+    const totalCols = colEnds.length;
+    cluster.forEach(item => {
+      result.push({ ev: item.ev, startH: item.startH, endH: item.endH, col: item.col, cols: totalCols });
+    });
+  });
+  return result;
+}
+
 function renderWeek(monday) {
   const grid = document.getElementById('cal-grid');
   grid.innerHTML = '';
@@ -489,7 +570,9 @@ function renderWeek(monday) {
     h.className = 'day-header';
     if (dayKeys[i] === today) h.classList.add('is-today');
     if (eventsByDate[dayKeys[i]]) h.classList.add('has-event');
-    h.innerHTML = `<div class="dow">${DAYS[i]}</div><div class="dom">${d.getDate()}</div>`;
+    const period = getPeriodForDate(dayKeys[i]);
+    const periodTag = period ? `<div class="period-tag" style="color:${period.textColor}">${period.label}</div>` : '';
+    h.innerHTML = `<div class="dow">${DAYS[i]}</div><div class="dom">${d.getDate()}</div>${periodTag}`;
     grid.appendChild(h);
   });
 
@@ -510,6 +593,10 @@ function renderWeek(monday) {
     col.className = 'day-col';
     col.style.position = 'relative';
 
+    const dk = dayKeys[di];
+    const period = getPeriodForDate(dk);
+    if (period) col.style.background = period.color;
+
     // Hour slots
     hours.forEach(() => {
       const slot = document.createElement('div');
@@ -517,12 +604,10 @@ function renderWeek(monday) {
       col.appendChild(slot);
     });
 
-    // Events
-    const dk = dayKeys[di];
+    // Events (laid out side-by-side if they overlap)
     if (eventsByDate[dk]) {
-      eventsByDate[dk].forEach(ev => {
-        const startH = timeToHours(ev.start);
-        const endH = timeToHours(ev.end);
+      const laidOut = layoutDayEvents(eventsByDate[dk]);
+      laidOut.forEach(({ ev, startH, endH, col: colIdx, cols }) => {
         const top = (startH - minHour) * 56; // px per hour = --hour-h
         const height = (endH - startH) * 56;
 
@@ -530,6 +615,9 @@ function renderWeek(monday) {
         block.className = `event-block cat-${ev.category || 'work'}`;
         block.style.top = `${top}px`;
         block.style.height = `${Math.max(height, 28)}px`;
+        block.style.left = `calc(${(colIdx / cols) * 100}% + 2px)`;
+        block.style.right = 'auto';
+        block.style.width = `calc(${100 / cols}% - 4px)`;
         block.innerHTML = `
           <div class="ev-time">${ev.start}–${ev.end}</div>
           <div class="ev-title">${ev.title}</div>
