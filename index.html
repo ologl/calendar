@@ -195,6 +195,45 @@
 
   .event-block:hover { filter: brightness(1.15); z-index: 10; }
 
+  /* Category colors */
+  .event-block.cat-tasks {
+    background: #c0392b;
+    color: #ffffff;
+  }
+
+  .event-block.cat-work {
+    background: #2d5a8e;
+    color: #ffffff;
+  }
+
+  .event-block.cat-travel {
+    background: #2e7d4f;
+    color: #ffffff;
+  }
+
+  .event-block.cat-personal {
+    background: #6a3d9a;
+    color: #ffffff;
+  }
+
+  .event-block.cat-medical {
+    background-color: #ffffff;
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(200, 30, 30, 0.35),
+      rgba(200, 30, 30, 0.35) 8px,
+      rgba(255, 255, 255, 0.35) 8px,
+      rgba(255, 255, 255, 0.35) 16px
+    );
+    color: #7a1f1f;
+    border: 1px solid rgba(200, 30, 30, 0.4);
+  }
+
+  .event-block.cat-medical .ev-time,
+  .event-block.cat-medical .ev-loc {
+    color: #7a1f1f;
+  }
+
   .event-block .ev-time {
     font-size: 0.58rem;
     opacity: 0.75;
@@ -298,35 +337,48 @@ const EVENTS = [
     start: '12:30', end: '13:00',
     title: 'Boat from Saltholmen to Styrsö Bratten',
     desc: '',
-    loc: 'Saltholmen'
+    loc: 'Saltholmen',
+    category: 'travel'
   },
   {
     date: '2026-07-30',
     start: '10:05', end: '10:50',
     title: 'Bus to Alingsås',
     desc: 'Bussnummer 62032. Biljettyp: Fix.',
-    loc: 'Nils Ericson Terminalen'
+    loc: 'Nils Ericson Terminalen',
+    category: 'travel'
   },
   {
     date: '2026-07-30',
     start: '11:03', end: '13:59',
     title: 'Train to Stockholm C',
     desc: 'Tågnummer 2032. Platser 169–170. Biljettyp: Fix.',
-    loc: 'Alingsås'
+    loc: 'Alingsås',
+    category: 'travel'
   },
   {
     date: '2026-08-06',
     start: '13:58', end: '16:54',
     title: 'Train to Alingsås',
     desc: 'Tågnummer 2035. Platser 227–228. Biljettyp: Fix.',
-    loc: 'Stockholm C'
+    loc: 'Stockholm C',
+    category: 'travel'
   },
   {
     date: '2026-08-06',
     start: '17:05', end: '17:50',
     title: 'Bus to Nils Ericson Terminalen',
     desc: 'Bussnummer 62035. Biljettyp: Fix.',
-    loc: 'Alingsås'
+    loc: 'Alingsås',
+    category: 'travel'
+  },
+  {
+    date: '2026-09-04',
+    start: '13:30', end: '14:00',
+    title: 'Tandhygienist Xuesong Jiang',
+    desc: '',
+    loc: '',
+    category: 'medical'
   }
 ];
 
@@ -475,7 +527,7 @@ function renderWeek(monday) {
         const height = (endH - startH) * 56;
 
         const block = document.createElement('div');
-        block.className = 'event-block';
+        block.className = `event-block cat-${ev.category || 'work'}`;
         block.style.top = `${top}px`;
         block.style.height = `${Math.max(height, 28)}px`;
         block.innerHTML = `
