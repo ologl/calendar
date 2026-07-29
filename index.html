@@ -325,9 +325,11 @@
 </header>
 
 <nav>
+  <button id="prev-month">« month</button>
   <button id="prev">← prev</button>
   <div id="week-range"></div>
   <button id="next">next →</button>
+  <button id="next-month">month »</button>
 </nav>
 
 <div class="calendar-wrap" id="cal-wrap">
@@ -625,18 +627,11 @@ const lastEvent = new Date(Math.max(...eventDates));
 // Start at the first week that has an event
 let currentMonday = getMonday(firstEvent);
 
-// All week Mondays that span the term
-function getAllEventWeeks() {
-  const weeks = new Set();
-  eventDates.forEach(d => {
-    weeks.add(getMonday(d).toISOString().slice(0,10));
-  });
-  const sorted = [...weeks].sort();
-  return sorted.map(s => new Date(s));
+function addMonths(d, n) {
+  const r = new Date(d);
+  r.setMonth(r.getMonth() + n);
+  return r;
 }
-
-const eventWeeks = getAllEventWeeks();
-let weekIndex = 0;
 
 // Background-tinted date ranges (e.g. trips, stays)
 const PERIODS = [
@@ -852,25 +847,39 @@ function hideTooltip() {
 
 // Navigation
 document.getElementById('prev').addEventListener('click', () => {
-  if (weekIndex > 0) { weekIndex--; renderWeek(eventWeeks[weekIndex]); }
+  currentMonday = addDays(currentMonday, -7);
+  renderWeek(currentMonday);
 });
 
 document.getElementById('next').addEventListener('click', () => {
-  if (weekIndex < eventWeeks.length - 1) { weekIndex++; renderWeek(eventWeeks[weekIndex]); }
+  currentMonday = addDays(currentMonday, 7);
+  renderWeek(currentMonday);
+});
+
+document.getElementById('prev-month').addEventListener('click', () => {
+  currentMonday = getMonday(addMonths(currentMonday, -1));
+  renderWeek(currentMonday);
+});
+
+document.getElementById('next-month').addEventListener('click', () => {
+  currentMonday = getMonday(addMonths(currentMonday, 1));
+  renderWeek(currentMonday);
 });
 
 // Keyboard navigation
 document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight' && weekIndex < eventWeeks.length - 1) {
-    weekIndex++; renderWeek(eventWeeks[weekIndex]);
+  if (e.key === 'ArrowRight') {
+    currentMonday = addDays(currentMonday, 7);
+    renderWeek(currentMonday);
   }
-  if (e.key === 'ArrowLeft' && weekIndex > 0) {
-    weekIndex--; renderWeek(eventWeeks[weekIndex]);
+  if (e.key === 'ArrowLeft') {
+    currentMonday = addDays(currentMonday, -7);
+    renderWeek(currentMonday);
   }
 });
 
 // Init
-renderWeek(eventWeeks[weekIndex]);
+renderWeek(currentMonday);
 </script>
 </body>
 </html>
