@@ -674,8 +674,8 @@ const eventDates = Object.keys(eventsByDate).map(d => new Date(d));
 const firstEvent = new Date(Math.min(...eventDates));
 const lastEvent = new Date(Math.max(...eventDates));
 
-// Start at the first week that has an event
-let currentMonday = getMonday(firstEvent);
+// Start on the week containing today's date
+let currentMonday = getMonday(new Date());
 
 function addMonths(d, n) {
   const r = new Date(d);
