@@ -768,6 +768,38 @@ const EVENTS = [
     loc: 'Linné',
     category: 'personal'
   },
+  {
+    date: '2026-08-16',
+    start: '00:15', end: '01:00',
+    title: 'Gentle',
+    desc: 'Stay Out West — Faithfool Records presents (Skeppet)',
+    loc: 'Skeppet',
+    category: 'personal'
+  },
+  {
+    date: '2026-08-16',
+    start: '01:00', end: '01:45',
+    title: "Sylvie's Head",
+    desc: 'Stay Out West — Faithfool Records presents (Skeppet, end time estimated)',
+    loc: 'Skeppet',
+    category: 'personal'
+  },
+  {
+    date: '2026-08-15',
+    start: '24:15', end: '25:00',
+    title: 'Gentle',
+    desc: 'Stay Out West — Faithfool Records presents (Skeppet). Runs past midnight — also listed on Sun 16 Aug.',
+    loc: 'Skeppet',
+    category: 'personal'
+  },
+  {
+    date: '2026-08-15',
+    start: '25:00', end: '25:45',
+    title: "Sylvie's Head",
+    desc: 'Stay Out West — Faithfool Records presents (Skeppet, end time estimated). Runs past midnight — also listed on Sun 16 Aug.',
+    loc: 'Skeppet',
+    category: 'personal'
+  },
 ];
 
 const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -950,14 +982,14 @@ function renderWeek(monday) {
     }
   });
 
-  // Clamp to a reasonable day range (6am–midnight), auto-expanding for late events
+  // Clamp to a wide range covering early-morning and past-midnight events
   if (!hasEvents) { minHour = 8; maxHour = 18; }
-  minHour = Math.max(6, minHour);
-  maxHour = Math.min(24, maxHour);
+  minHour = Math.max(0, minHour);
+  maxHour = Math.min(26, maxHour);
 
   // Add padding
-  minHour = Math.max(6, minHour - 1);
-  maxHour = Math.min(24, maxHour + 1);
+  minHour = Math.max(0, minHour - 1);
+  maxHour = Math.min(26, maxHour + 1);
 
   const hours = Array.from({length: maxHour - minHour}, (_, i) => minHour + i);
 
