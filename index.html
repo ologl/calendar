@@ -953,6 +953,10 @@ function renderWeek(monday) {
         block.addEventListener('mouseenter', (e) => showTooltip(e, ev));
         block.addEventListener('mousemove', (e) => moveTooltip(e));
         block.addEventListener('mouseleave', hideTooltip);
+        block.addEventListener('touchstart', (e) => {
+          e.stopPropagation();
+          showTooltip(e.touches[0], ev);
+        }, {passive: true});
 
         col.appendChild(block);
       });
@@ -972,10 +976,21 @@ function showTooltip(e, ev) {
 }
 
 function moveTooltip(e) {
+  const margin = 8;
+  const tw = 300; // approx tooltip width incl. padding
+  const th = 170; // approx tooltip max height
+
   let x = e.clientX + 14;
   let y = e.clientY + 14;
-  if (x + 290 > window.innerWidth) x = e.clientX - 294;
-  if (y + 150 > window.innerHeight) y = e.clientY - 154;
+
+  // Flip if it would overflow the right/bottom edge
+  if (x + tw > window.innerWidth - margin) x = e.clientX - tw - 14;
+  if (y + th > window.innerHeight - margin) y = e.clientY - th - 14;
+
+  // Clamp so it never goes off the left/top edge either
+  x = Math.max(margin, Math.min(x, window.innerWidth - tw - margin));
+  y = Math.max(margin, Math.min(y, window.innerHeight - th - margin));
+
   tooltip.style.left = x + 'px';
   tooltip.style.top = y + 'px';
 }
@@ -983,6 +998,10 @@ function moveTooltip(e) {
 function hideTooltip() {
   tooltip.classList.remove('visible');
 }
+
+document.addEventListener('touchstart', (e) => {
+  if (!e.target.closest('.event-block')) hideTooltip();
+}, {passive: true});
 
 // Navigation
 document.getElementById('prev').addEventListener('click', () => {
