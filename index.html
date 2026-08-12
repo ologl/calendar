@@ -245,6 +245,19 @@
     color: #7a1f1f;
   }
 
+  /* Priority stripe (e.g. for festival acts): overlays category color, doesn't replace it */
+  .event-block.priority-must {
+    border-left: 4px solid #e02424;
+  }
+
+  .event-block.priority-wanna {
+    border-left: 4px solid #ec4899;
+  }
+
+  .event-block.priority-maybe {
+    border-left: 4px solid #7dd3fc;
+  }
+
   .event-block .ev-time {
     font-size: 0.58rem;
     opacity: 0.75;
@@ -654,7 +667,8 @@ const EVENTS = [
     title: 'Yaeger',
     desc: 'Way Out West',
     loc: 'Linné',
-    category: 'personal'
+    category: 'personal',
+    priority: 'must'
   },
   {
     date: '2026-08-13',
@@ -931,7 +945,7 @@ function renderWeek(monday) {
         const height = (endH - startH) * 56;
 
         const block = document.createElement('div');
-        block.className = `event-block cat-${ev.category || 'work'}`;
+        block.className = `event-block cat-${ev.category || 'work'}${ev.priority ? ' priority-' + ev.priority : ''}`;
         block.style.top = `${top}px`;
         block.style.height = `${Math.max(height, 28)}px`;
         block.style.left = `calc(${(colIdx / cols) * 100}% + 2px)`;
