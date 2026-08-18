@@ -1111,13 +1111,14 @@ function renderWeek(monday) {
     if (eventsByDate[dk]) {
       const laidOut = layoutDayEvents(eventsByDate[dk]);
       laidOut.forEach(({ ev, startH, endH, col: colIdx, cols }) => {
-        const top = (startH - minHour) * 56; // px per hour = --hour-h
-        const height = (endH - startH) * 56;
+        const GAP_PX = 3; // visual whitespace between vertically adjacent blocks
+        const top = (startH - minHour) * 56 + GAP_PX / 2; // px per hour = --hour-h
+        const height = (endH - startH) * 56 - GAP_PX;
 
         const block = document.createElement('div');
         block.className = `event-block cat-${ev.category || 'work'}${ev.priority ? ' priority-' + ev.priority : ''}`;
         block.style.top = `${top}px`;
-        block.style.height = `${Math.max(height, 28)}px`;
+        block.style.height = `${Math.max(height, 24)}px`;
         block.style.left = `calc(${(colIdx / cols) * 100}% + 2px)`;
         block.style.right = 'auto';
         block.style.width = `calc(${100 / cols}% - 4px)`;
