@@ -263,6 +263,17 @@
     border-left: 4px solid #16a34a;
   }
 
+  /* Done status: keeps event visible but marks it completed */
+  .event-block.status-done {
+    background: #2e7d4f !important;
+    background-image: none !important;
+    opacity: 0.75;
+  }
+
+  .event-block.status-done .ev-title {
+    text-decoration: line-through;
+  }
+
   .event-block .ev-time {
     font-size: 0.58rem;
     opacity: 0.75;
@@ -873,9 +884,10 @@ const EVENTS = [
     date: '2026-08-24',
     start: '10:00', end: '10:45',
     title: 'Contact the tax administration',
-    desc: '',
+    desc: 'Called, left a voicemail. Follow-up scheduled for 31 Aug.',
     loc: '',
-    category: 'work'
+    category: 'work',
+    status: 'done'
   },
   {
     date: '2026-08-18',
@@ -1875,7 +1887,7 @@ function renderWeek(monday) {
         const height = (endH - startH) * 56 - GAP_PX;
 
         const block = document.createElement('div');
-        block.className = `event-block cat-${ev.category || 'work'}${ev.priority ? ' priority-' + ev.priority : ''}`;
+        block.className = `event-block cat-${ev.category || 'work'}${ev.priority ? ' priority-' + ev.priority : ''}${ev.status === 'done' ? ' status-done' : ''}`;
         block.style.top = `${top}px`;
         block.style.height = `${Math.max(height, 24)}px`;
         block.style.left = `calc(${(colIdx / cols) * 100}% + 2px)`;
