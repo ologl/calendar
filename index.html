@@ -263,6 +263,11 @@
     border-left: 4px solid #0d9488;
   }
 
+  /* Verify status: not a priority tier — flags something whose details (time/date/existence) need confirming */
+  .event-block.priority-verify {
+    border-left: 4px dashed #d97706;
+  }
+
   /* Done status: keeps event visible but marks it completed */
   .event-block.status-done {
     background: #2e7d4f !important;
@@ -1008,19 +1013,21 @@ const EVENTS = [
     date: '2026-10-12',
     start: '08:15', end: '10:00',
     title: 'EU2210: Seminar group 2',
-    desc: '',
+    desc: 'Might be moved to Tuesday (13 Oct) — not confirmed.',
     loc: 'C217',
     category: 'work',
-    budget: 'EU2210'
+    budget: 'EU2210',
+    priority: 'verify'
   },
   {
     date: '2026-10-12',
     start: '10:15', end: '12:00',
     title: 'EU2210: Seminar group 3',
-    desc: '',
+    desc: 'Might be moved to Tuesday (13 Oct) — not confirmed.',
     loc: 'C217',
     category: 'work',
-    budget: 'EU2210'
+    budget: 'EU2210',
+    priority: 'verify'
   },
   {
     date: '2026-10-13',
