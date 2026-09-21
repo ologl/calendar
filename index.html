@@ -1842,6 +1842,15 @@ const lastEvent = new Date(Math.max(...eventDates));
 // Start on the week containing today's date
 let currentMonday = getMonday(new Date());
 
+// ISO 8601 week number (weeks start Monday; week 1 contains the year's first Thursday)
+function isoWeek(d) {
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const dayNum = t.getUTCDay() || 7;
+  t.setUTCDate(t.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+  return Math.ceil(((t - yearStart) / 86400000 + 1) / 7);
+}
+
 function addMonths(d, n) {
   const r = new Date(d);
   r.setMonth(r.getMonth() + n);
@@ -2014,7 +2023,7 @@ function renderWeek(monday) {
   // Update week range label
   const endSunday = addDays(monday, 6);
   document.getElementById('week-range').textContent =
-    `${days[0].getDate()} ${MONTHS[days[0].getMonth()]} – ${endSunday.getDate()} ${MONTHS[endSunday.getMonth()]} ${endSunday.getFullYear()}`;
+    `Week ${isoWeek(monday)} · ${days[0].getDate()} ${MONTHS[days[0].getMonth()]} – ${endSunday.getDate()} ${MONTHS[endSunday.getMonth()]} ${endSunday.getFullYear()}`;
 
   // Corner
   const corner = document.createElement('div');
