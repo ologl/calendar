@@ -1867,6 +1867,7 @@ function localKey(d) {
 const RECURRING_DAYS = [
   { label: "Mother's Day", date: y => lastSunday(y, 4) },    // Mors dag: last Sunday of May
   { label: "Father's Day", date: y => nthSunday(y, 10, 2) }, // Fars dag: second Sunday of November
+  { label: "🎂 Åse's Birthday", date: y => new Date(y, 10, 17) }, // 17 November
 ];
 function getRecurringDay(dk) {
   const y = Number(dk.slice(0, 4));
