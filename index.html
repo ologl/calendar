@@ -145,6 +145,14 @@
   .day-header.has-event .dom { color: #000; font-weight: 500; }
   .day-header.is-today { background: var(--today); }
 
+  .day-tag {
+    font-size: 0.5rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 2px;
+    color: #be185d;
+  }
+
   .period-tag {
     font-size: 0.5rem;
     letter-spacing: 0.1em;
@@ -1842,6 +1850,30 @@ const lastEvent = new Date(Math.max(...eventDates));
 // Start on the week containing today's date
 let currentMonday = getMonday(new Date());
 
+// Recurring yearly days (Swedish dates), computed for any year
+function nthSunday(year, month, n) {           // month 0-11, n = 1..5
+  const d = new Date(year, month, 1);
+  d.setDate(1 + ((7 - d.getDay()) % 7) + (n - 1) * 7);
+  return d;
+}
+function lastSunday(year, month) {
+  const d = new Date(year, month + 1, 0);        // last day of month
+  d.setDate(d.getDate() - d.getDay());
+  return d;
+}
+function localKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+const RECURRING_DAYS = [
+  { label: "Mother's Day", date: y => lastSunday(y, 4) },    // Mors dag: last Sunday of May
+  { label: "Father's Day", date: y => nthSunday(y, 10, 2) }, // Fars dag: second Sunday of November
+];
+function getRecurringDay(dk) {
+  const y = Number(dk.slice(0, 4));
+  const hit = RECURRING_DAYS.find(r => localKey(r.date(y)) === dk);
+  return hit ? hit.label : null;
+}
+
 // ISO 8601 week number (weeks start Monday; week 1 contains the year's first Thursday)
 function isoWeek(d) {
   const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -2038,7 +2070,9 @@ function renderWeek(monday) {
     if (eventsByDate[dayKeys[i]]) h.classList.add('has-event');
     const period = getPeriodForDate(dayKeys[i]);
     const periodTag = period ? `<div class="period-tag" style="color:${period.textColor}">${period.label}</div>` : '';
-    h.innerHTML = `<div class="dow">${DAYS[i]}</div><div class="dom">${d.getDate()}</div>${periodTag}`;
+    const recurring = getRecurringDay(dayKeys[i]);
+    const dayTag = recurring ? `<div class="day-tag">${recurring}</div>` : '';
+    h.innerHTML = `<div class="dow">${DAYS[i]}</div><div class="dom">${d.getDate()}</div>${dayTag}${periodTag}`;
     grid.appendChild(h);
   });
 
