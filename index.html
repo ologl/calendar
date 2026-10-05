@@ -220,6 +220,12 @@
     color: #ffffff;
   }
 
+  /* Fixed commitments (set time + place, e.g. teaching, meetings, defenses): warm mustard, dark text */
+  .event-block.cat-fixed {
+    background: #e0b040;
+    color: #3b2a00;
+  }
+
   /* Task types (replace all-red tasks): focus = deep work/reading, admin = recedes */
   .event-block.cat-focus {
     background: #3730a3;
@@ -1046,7 +1052,7 @@ const EVENTS = [
     title: 'EU2210: Policy implementation 2',
     desc: '',
     loc: 'A012',
-    category: 'work',
+    category: 'fixed',
     budget: 'EU2210'
   },
   {
@@ -1725,7 +1731,7 @@ const EVENTS = [
     title: 'EU2610 planning meeting — schemaläggning',
     desc: 'Går igenom schemaläggning tillsammans. Bekanta sig med dokumenten och fundera på var sitt håll innan, jämför anteckningar på mötet.',
     loc: '',
-    category: 'work',
+    category: 'fixed',
     budget: 'EU2610'
   },
   {
@@ -1743,7 +1749,7 @@ const EVENTS = [
     title: 'PhD defense Taiwo Ahmed',
     desc: 'Pol-events har bjudit in dig. Följer 1, Svarade inte: 1.',
     loc: 'Linnésalen, Seminariegatan 1B',
-    category: 'work',
+    category: 'fixed',
     priority: 'maybe'
   },
   {
