@@ -220,6 +220,17 @@
     color: #ffffff;
   }
 
+  /* Task types (replace all-red tasks): focus = deep work/reading, admin = recedes */
+  .event-block.cat-focus {
+    background: #3730a3;
+    color: #ffffff;
+  }
+
+  .event-block.cat-admin {
+    background: #64748b;
+    color: #ffffff;
+  }
+
   .event-block.cat-work {
     background: #2d5a8e;
     color: #ffffff;
@@ -261,6 +272,11 @@
   /* Priority stripe (e.g. for festival acts): overlays category color, doesn't replace it */
   .event-block.priority-must {
     border-left: 4px solid #e02424;
+  }
+
+  /* Hard deadline marker: red edge only, so red stays meaningful */
+  .event-block.priority-deadline {
+    border-left: 4px solid #c0392b;
   }
 
   .event-block.priority-wanna {
@@ -1014,7 +1030,7 @@ const EVENTS = [
     title: 'Ask Andreas about course coordinatorship',
     desc: '',
     loc: '',
-    category: 'tasks'
+    category: 'admin'
   },
   {
     date: '2026-10-05',
@@ -1216,7 +1232,7 @@ const EVENTS = [
     title: 'Prep — EU2610 planning meeting',
     desc: 'Bekanta sig med dokumenten inför morgondagens schemaläggningsmöte.',
     loc: '',
-    category: 'tasks',
+    category: 'admin',
     budget: 'EU2610'
   },
   {
@@ -1267,7 +1283,7 @@ const EVENTS = [
     title: 'Läsa pepers för EU2210',
     desc: 'Full day dedicated to reading ahead of the 13 Oct seminar. Assignment 3 hand-in confirmed Wed 7 Oct.',
     loc: '',
-    category: 'tasks',
+    category: 'focus',
     budget: 'EU2210'
   },
   {
@@ -1276,7 +1292,7 @@ const EVENTS = [
     title: 'Läsa pepers för EU2210',
     desc: 'Trimmed to make room for PhD defense (Taiwo Ahmed) at 13:15. Reading ahead of the 13 Oct seminar. Assignment 3 hand-in confirmed Wed 7 Oct.',
     loc: '',
-    category: 'tasks',
+    category: 'focus',
     budget: 'EU2210'
   },
   {
@@ -1566,7 +1582,7 @@ const EVENTS = [
     title: 'EU2210 post teaching admin',
     desc: '',
     loc: '',
-    category: 'tasks',
+    category: 'admin',
     budget: 'EU2210'
   },
   {
@@ -1692,7 +1708,8 @@ const EVENTS = [
     title: 'Course budgets HT2027 — EU2210 & EU1130',
     desc: 'Fill in preliminary course budgets for both courses based on last autumn\'s hours; mark unstaffed slots "VAKANT (institutionsnamn)". Send EU2210 budget to linda.berg@pol.gu.se; send EU1130 budget + schema to kandidat@pol.gu.se, cc linda.berg@pol.gu.se. Deadline 12 Oct. Also: compile EU1130 Samfak room-access list (teachers with 3+ sessions — name, time, place, key needed) and send to Caroline (kandidat@pol.gu.se) — EU1130 starts 4 Nov, so aim to send by 23 Oct.',
     loc: '',
-    category: 'tasks'
+    category: 'admin',
+    priority: 'deadline'
   },
   {
     date: '2026-10-07',
@@ -1717,7 +1734,7 @@ const EVENTS = [
     title: 'Läsa pepers för EU2210',
     desc: 'Extra reading time — shifted here from the trimmed Fri 9 Oct slot (PhD defense at 13:15 that day).',
     loc: '',
-    category: 'tasks',
+    category: 'focus',
     budget: 'EU2210'
   },
   {
