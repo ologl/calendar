@@ -4043,46 +4043,6 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight') {
     currentMonday = addDays(currentMonday, 7);
     renderWeek(currentMonday);
-  },
-  {
-    date: '2026-11-12',
-    start: '08:15', end: '08:30',
-    title: 'Remind EU1130 students: exam registration deadline Mon 16 Nov',
-    desc: 'Today: remind the students (say it at both Övning 1 sessions, 08:15 and 10:15, and/or post an announcement) that the registration deadline for Tentamen 1 is 10 days before the exam, i.e. Mon 16 Nov. Students without a registration cannot sit the exam.',
-    loc: '',
-    category: 'admin',
-    budget: 'EU1130',
-    priority: 'must'
-  },
-  {
-    date: '2026-11-13',
-    start: '12:00', end: '12:15',
-    title: 'Check DISA accounts — everyone grading EU1130 Tentamen 1',
-    desc: 'Check that you and everyone grading the exam have a DISA account. Do it a few days before the 16 Nov deadline so there is time to fix any problems.',
-    loc: '',
-    category: 'admin',
-    budget: 'EU1130',
-    priority: 'must'
-  },
-  {
-    date: '2026-11-16',
-    start: '13:00', end: '14:00',
-    title: 'DEADLINE: EU1130 exam questions in DISA + admin added to task group',
-    desc: 'Last day (10 days before the exam on Thu 26 Nov): exam questions uploaded in DISA and the administrator added to the task group. Note: the new admin meeting is only on Wed 18 Nov, so make sure they can be added before then. Also registration deadline for students today.',
-    loc: '',
-    category: 'admin',
-    budget: 'EU1130',
-    priority: 'deadline'
-  },
-  {
-    date: '2026-11-26',
-    start: '09:00', end: '13:00',
-    title: 'EU1130 Tentamen 1 (time TBC)',
-    desc: 'EU1130 Tentamen 1 — you are course responsible. Placeholder time until confirmed; overlaps the Felix reading prep at 10:00-12:00 on the same day.',
-    loc: '',
-    category: 'fixed',
-    budget: 'EU1130',
-    priority: 'must'
   }
   if (e.key === 'ArrowLeft') {
     currentMonday = addDays(currentMonday, -7);
