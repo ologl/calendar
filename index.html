@@ -1656,10 +1656,11 @@ const EVENTS = [
     date: '2026-11-25',
     start: '08:15', end: '10:00',
     title: 'EU2122 lecture',
-    desc: '',
+    desc: 'SWAPPED — Roman gives his second lecture in this slot instead (agreed 24 Nov, so Etel gets more days to recover). Etel takes Fri 27 Nov 13–15, Mon 30 Nov 13–15 and Tue 1 Dec 10–12. ',
     loc: 'B009',
     category: 'fixed',
-    budget: 'EU2122'
+    budget: 'EU2122',
+    status: 'cancelled'
   },
   {
     date: '2026-11-27',
@@ -3642,10 +3643,11 @@ const EVENTS = [
     date: '2026-11-25',
     start: '10:00', end: '12:00',
     title: 'Post-lecture prep (wind-down)',
-    desc: 'Wind-down after EU2122 lecture (08:15–10:00). Standing rule (9 Nov): 2 h after every lecture, charged to the course budget as post-lecture prep. No new tasks here.',
+    desc: 'No lecture for Etel today (Roman took the slot). Wind-down after EU2122 lecture (08:15–10:00). Standing rule (9 Nov): 2 h after every lecture, charged to the course budget as post-lecture prep. No new tasks here.',
     loc: '',
     category: 'work',
-    budget: 'EU2122'
+    budget: 'EU2122',
+    status: 'cancelled'
   },
   {
     date: '2026-11-27',
@@ -3881,10 +3883,11 @@ const EVENTS = [
     date: '2026-12-01',
     start: '11:30', end: '13:30',
     title: 'Lunch with Ruban & Markus (prel.)',
-    desc: 'Preliminary — one of two candidate dates (Tue 1 Dec / Thu 3 Dec); keep whichever is confirmed and delete the other. Wide slot, time TBC.',
+    desc: 'DROPPED as an option — EU2122 lecture 10:15–12:00 + wind-down now that day; Thu 3 Dec remains the lunch option. Preliminary — one of two candidate dates (Tue 1 Dec / Thu 3 Dec); keep whichever is confirmed and delete the other. Wide slot, time TBC.',
     loc: '',
     category: 'personal',
-    priority: 'maybe'
+    priority: 'maybe',
+    status: 'cancelled'
   },
   {
     date: '2026-12-03',
@@ -3939,6 +3942,44 @@ const EVENTS = [
     loc: '',
     category: 'personal',
     priority: 'maybe'
+  },
+  {
+    date: '2026-11-30',
+    start: '13:15', end: '15:00',
+    title: 'EU2122 lecture',
+    desc: 'Swapped in from Wed 25 Nov (Roman took that slot so Etel could recover). Room TBC. Clashes with the Standing Daniel Meeting 14:30–15:30.',
+    loc: '',
+    category: 'fixed',
+    budget: 'EU2122',
+    priority: 'verify'
+  },
+  {
+    date: '2026-11-30',
+    start: '15:00', end: '17:00',
+    title: 'Post-lecture prep (wind-down)',
+    desc: 'Wind-down after EU2122 lecture (13:15–15:00). Standing rule: 2 h after every lecture.',
+    loc: '',
+    category: 'work',
+    budget: 'EU2122'
+  },
+  {
+    date: '2026-12-01',
+    start: '10:15', end: '12:00',
+    title: 'EU2122 lecture',
+    desc: 'Swapped in from Wed 25 Nov (Roman took that slot so Etel could recover). Room TBC.',
+    loc: '',
+    category: 'fixed',
+    budget: 'EU2122',
+    priority: 'verify'
+  },
+  {
+    date: '2026-12-01',
+    start: '12:00', end: '14:00',
+    title: 'Post-lecture prep (wind-down)',
+    desc: 'Wind-down after EU2122 lecture (10:15–12:00). Standing rule: 2 h after every lecture.',
+    loc: '',
+    category: 'work',
+    budget: 'EU2122'
   },
 ];
 
